@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.devfun.settingweb_boot.dao.StatisticMapper">
+ 
+    <select id="selectYearLogin" parameterType="string" resultType="hashMap">
+        select count(*) as totCnt
+        from statistc.requestinfo ri
+        where left(ri.createDate, 2) = #{year} and ri.requestCode ='L';
+    </select>
+    
+    <select id="selectYearMonthLogin" parameterType="string" resultType="hashMap">
+        select count(*) as totCnt
+        from statistc.requestinfo ri
+		where left(ri.createDate, 4)= #{yearMonth} and ri.requestCode ='L';
+    </select>
+    
+    <select id="selectYearMonthDayLogin" parameterType="string" resultType="hashMap">
+        select count(*) as totCnt
+        from statistc.requestinfo ri
+		where left(ri.createDate, 6)= #{yearMonthDay} and ri.requestCode ='L';  
+    </select>
+    
+     <select id="selectYearMonthDepartmentLogin" parameterType="string" resultType="hashMap">
+       select count(*) as totCnt
+        from statistc.user us, statistc.requestinfo ri 
+		where left(ri.createDate, 4)= #{yearMonth} and us.userID = ri.userID and ri.requestCode ='L' and us.department= #{department};
+    </select>
+    
+    <select id="selectYearMonthAverageLogin" parameterType="string" resultType="hashMap">
+   		select Round(count(*) / d.dayCnt,3) as averageCnt
+        from statistc.requestinfo ri, statistc.daysPerMonth d
+		where left(ri.createDate, 4)= #{yearMonth} and ri.requestCode ='L' and mid(ri.createDate,3,2)= d.month ; 
+    </select>
+    
+    <select id="selectexceptHolidaymonthLogin" parameterType="string" resultType="hashMap">
+	select count(*) -
+	( 
+		select count(*) from statistc.requestinfo ri, statistc.holiday h
+		where left(ri.createDate,4)=#{yearMonth} and ri.requestCode ='L' and
+		left(ri.createDate, 6) = h.yearMonthDay
+	) 	as totCnt
+		from statistc.requestinfo ri
+		where left(ri.createDate,4)=#{yearMonth} and ri.requestCode ='L';
+   	</select>
+    
+</mapper>

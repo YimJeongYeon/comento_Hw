@@ -9,4 +9,5 @@ public class SettingwebBootApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SettingwebBootApplication.class, args);
 	}
+
 }
